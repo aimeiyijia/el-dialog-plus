@@ -9,6 +9,7 @@
       :visible.sync="dialogVisible"
       type="edit"
       :position="[1, 2]"
+      :draggable="true"
     >
       <el-button>打开</el-button>
       <!-- <template slot="header"></template> -->

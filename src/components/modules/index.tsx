@@ -3,11 +3,19 @@ import { Component, Prop, Emit, Watch } from 'vue-property-decorator'
 import { debounce } from 'ts-debounce'
 import isNumber from 'is-number'
 
+import '../directives/el-draggable-dialog'
+
 import '../styles/index.scss'
 
 interface IScopedSlots {
   [key: string]: any
 }
+
+interface IDirectives {
+  name: string
+  value?: object
+}
+
 interface IBtnMatch {
   [key: string]: any
 }
@@ -28,6 +36,9 @@ interface IBtnsOptions {
 export default class PDialog extends Vue {
   // 弹窗是否打开
   @Prop({ type: Boolean, default: false }) readonly visible!: boolean
+
+  //弹窗是否可拖拽
+  @Prop({ type: Boolean, default: true }) readonly draggable?: boolean
 
   // 使用内置的按钮进行的自定义按钮布局
   @Prop({ type: undefined || Array, default: undefined }) readonly footerLayout?: undefined | []
@@ -110,14 +121,15 @@ export default class PDialog extends Vue {
 
   // 防抖工厂
   private createDebounceFn(fn: any) {
-    return debounce(fn, 300, { isImmediate : true })
+    return debounce(fn, 300, { isImmediate: true })
   }
 
   // 取消
   @Emit('cancel')
   private handleCancel() {
     console.log('取消')
-    return this.visible }
+    return this.visible
+  }
 
   // 删除
   @Emit('delete')
@@ -148,6 +160,14 @@ export default class PDialog extends Vue {
   private handleOff() { return this.visible }
 
   render(h: CreateElement): VNode {
+
+    // 高度自适应指令
+    let directives: IDirectives[] = []
+    if(this.draggable){
+      directives.push({ name: 'el-draggable-dialog'})
+    }
+
+
     // 组装插槽及作用域插槽
     const scopedSlots: IScopedSlots = this.$scopedSlots
     const slots: IFalsySlot[] = []
@@ -194,6 +214,7 @@ export default class PDialog extends Vue {
         class="el-dialog-plus-container"
         {...{ props: { ...this.$attrs } }}
         visible={this.visible}
+        {...{ directives }}
         {...{
           scopedSlots: customScopedSlots
         }}

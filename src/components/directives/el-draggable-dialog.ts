@@ -1,4 +1,4 @@
-import { DirectiveOptions } from 'vue'
+import Vue, { DirectiveOptions } from 'vue'
 
 export const elDraggableDialog: DirectiveOptions = {
   bind(el, _, vnode) {
@@ -73,3 +73,5 @@ export const elDraggableDialog: DirectiveOptions = {
     }
   }
 }
+
+Vue.directive('el-draggable-dialog', elDraggableDialog)
