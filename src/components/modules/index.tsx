@@ -1,8 +1,7 @@
 import Vue, { VNode, CreateElement } from 'vue'
 import { Component, Prop, Emit, Watch } from 'vue-property-decorator'
-import debounce from 'lodash/debounce'
-import cloneDeep from 'lodash/cloneDeep'
-import isNumber from 'lodash/isNumber'
+import { debounce } from 'ts-debounce'
+import isNumber from 'is-number'
 
 import '../styles/index.scss'
 
@@ -31,7 +30,7 @@ export default class PDialog extends Vue {
   @Prop({ type: Boolean, default: false }) readonly visible!: boolean
 
   // 使用内置的按钮进行的自定义按钮布局
-  @Prop({ type: undefined || Array, default: undefined  }) readonly footerLayout?: undefined | []
+  @Prop({ type: undefined || Array, default: undefined }) readonly footerLayout?: undefined | []
 
   // 自定插槽中的vnode元素在内置按钮中的位置，从1开始
   @Prop({ type: Array, default: () => [] }) readonly position!: number[]
@@ -79,7 +78,7 @@ export default class PDialog extends Vue {
   // 优先级最高
   @Watch('footerLayout', { immediate: true })
   private footerLayoutChange(val: string[]) {
-    if(!val) return
+    if (!val) return
     const btnMatch: IBtnMatch = {
       cancel: this.cancelBtn,
       delete: this.deleteBtn,
@@ -111,12 +110,14 @@ export default class PDialog extends Vue {
 
   // 防抖工厂
   private createDebounceFn(fn: any) {
-    return debounce(fn, 300, { leading: true, trailing: false })
+    return debounce(fn, 300, { isImmediate : true })
   }
 
   // 取消
   @Emit('cancel')
-  private handleCancel() { return this.visible }
+  private handleCancel() {
+    console.log('取消')
+    return this.visible }
 
   // 删除
   @Emit('delete')
